@@ -14,23 +14,22 @@
         <h2 class="hotel-name">{{item.name}}</h2>
         <p style="color:#999">
           {{item.alias}}
-          <span >
-            <i class="iconfont iconhuangguan" v-for="(item,index) in [1]" :key="index" />
+          <span v-if="item.hotellevel&&item.hotellevel.level === 1">
+            <i class="iconfont iconhuangguan origin" v-for="(item,index) in [1]" :key="index" />
           </span>
-          <!-- <span>
-            <i class="iconfont iconhuangguan" v-for="(item,index) in [1,2]" :key="index" />
+          <span v-if="item.hotellevel&&item.hotellevel.level === 2">
+            <i class="iconfont iconhuangguan origin" v-for="(item,index) in [1,2]" :key="index" />
           </span>
-          <span>
-            <i class="iconfont iconhuangguan" v-for="(item,index) in [1,2,3]" :key="index" />
+          <span v-if="item.hotellevel&&item.hotellevel.level === 3">
+            <i class="iconfont iconhuangguan origin" v-for="(item,index) in [1,2,3]" :key="index" />
           </span>
-          <span>
-            <i class="iconfont iconhuangguan" v-for="(item,index) in [1,2,3,4]" :key="index" />
+          <span v-if="item.hotellevel&&item.hotellevel.level === 4">
+            <i class="iconfont iconhuangguan origin" v-for="(item,index) in [1,2,3,4]" :key="index" />
           </span>
-          <span>
-            <i class="iconfont iconhuangguan" v-for="(item,index) in [1,2,3,4,5]" :key="index" />
-          </span> -->
-          <!-- {{item.hotellevel}}星 -->
-          {{item.hoteltype.name}}
+          <span v-if="item.hotellevel&&item.hotellevel.level === 5">
+            <i class="iconfont iconhuangguan origin" v-for="(item,index) in [1,2,3,4,5]" :key="index" />
+          </span>
+          {{item.hoteltype&&item.hoteltype.name}}
         </p>
         <p>
           <el-rate

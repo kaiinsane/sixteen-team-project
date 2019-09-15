@@ -240,7 +240,7 @@ export default {
       hotelasset: [], // 酒店设施
       radio: false, // 按钮选中状态，临时变量
       cityList: [], // 存放城市列表
-      scenicList:[], 
+      scenicList: [],
       infoData: {
         // data: [
         //   {
@@ -372,11 +372,13 @@ export default {
       }).then(res => {
         this.infoData = res.data;
         this.total = this.infoData.total;
-        this.$store.commit('hotelList/setInfoData',this.infoData)
-        this.$store.commit('hotelList/setScenicList',this.infoData.data[0].scenic)
-        this.$store.commit('hotelList/setHotelList',this.infoData.data)
+        this.$store.commit("hotelList/setInfoData", this.infoData);
+        this.$store.commit(
+          "hotelList/setScenicList",
+          this.infoData.data[0].scenic
+        );
+        this.$store.commit("hotelList/setHotelList", this.infoData.data);
         // console.log(this.$store.state.hotelList.scenicList);
-        
       });
       this.$router.push({
         path: "/hotel?city=74"
