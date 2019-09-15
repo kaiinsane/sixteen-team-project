@@ -71,7 +71,9 @@
           <img src="http://157.122.54.189:9093/images/pic_sea.jpeg`" alt="">
         </div>
       </el-col>
-      <el-col :span="18"></el-col>
+      <el-col :span="18">
+        
+      </el-col>
     </el-row>
   </div>
 </template>
