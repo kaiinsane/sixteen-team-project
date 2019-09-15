@@ -8,10 +8,12 @@
       :key="index"
     >
       <el-col :span="8">
-        <img :src="item.photos" alt />
+        <a href="javascript:" @click="jump(item.id)">
+          <img :src="item.photos" alt />
+        </a>
       </el-col>
       <el-col :span="10" class="hotel-intro">
-        <h2 class="hotel-name">{{item.name}}</h2>
+        <h2 class="hotel-name" @click="jump(item.id)">{{item.name}}</h2>
         <p style="color:#999">
           {{item.alias}}
           <span v-if="item.hotellevel&&item.hotellevel.level === 1">
@@ -98,6 +100,11 @@ export default {
     };
   },
   methods: {
+    jump(id){
+      this.$router.push({
+        path:'hotel/' + id
+      })
+    },
     getRandom() {
       return Math.floor(Math.random() * 90 + 10);
     }
