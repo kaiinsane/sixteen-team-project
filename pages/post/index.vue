@@ -1,124 +1,154 @@
 <template>
   <div class="container">
-    <el-row>
-      <el-col :span="6">
-        <div class="nav" @mouseleave="handleOutHover">
-          <ul class="nav_menu" style="margin-top:10px">
-            <li v-for="(item,index) in cityList" :key="index" @mouseover="handleHover(index)">
-              <span>{{item.type}}</span>
-              <i class="el-icon-arrow-right fr"></i>
-            </li>
-          </ul>
-          <div class="nav_item">
-            <el-row
-              type="flex"
-              justify="start"
-              v-for="(item,index) in hot_city"
-              :key="'a'+index"
-              v-show="currentHover === 0"
-            >
-              <el-col :span="24">
-                <span class="num">{{index + 1}}</span>
-                <a href="javascript:" class="city">{{item.city}}</a>
-                <a href="javascript:">{{item.desc}}</a>
-              </el-col>
-            </el-row>
-            <el-row
-              type="flex"
-              justify="start"
-              v-for="(item,index) in recommoned_city"
-              :key="'b'+index"
-              v-show="currentHover === 1"
-            >
-              <el-col :span="24">
-                <span class="num">{{index + 1}}</span>
-                <a href="javascript:" class="city">{{item.city}}</a>
-                <a href="javascript:">{{item.desc}}</a>
-              </el-col>
-            </el-row>
-
-             <el-row
-              type="flex"
-              justify="start"
-              v-for="(item,index) in islandList"
-              :key="'c'+index"
-              v-show="currentHover === 2"
-            >
-              <el-col :span="24">
-                <span class="num">{{index + 1}}</span>
-                <a href="javascript:" class="city">{{item.city}}</a>
-                <a href="javascript:">{{item.desc}}</a>
-              </el-col>
-            </el-row>
-
-             <el-row
-              type="flex"
-              justify="start"
-              v-for="(item,index) in recommoned_city"
-              :key="'d'+index"
-              v-show="currentHover === 3"
-            >
-              <el-col :span="24">
-                <span class="num">{{index + 1}}</span>
-                <a href="javascript:" class="city">{{item.city}}</a>
-                <a href="javascript:">{{item.desc}}</a>
-              </el-col>
-            </el-row>
+    <el-row type="flex" justify="space-between">
+      <!-- 侧边推荐栏 -->
+      <div class="aside">
+        <PostMenu></PostMenu>
+      </div>
+      <div class="main">
+        <!-- 搜索栏 -->
+        <div class="search">
+          <el-input
+            placeholder="请输入想去的地方，比如：'广州'"
+            v-model="searchCity"
+            class="search_box"
+            @keyup.enter.native="searchData(searchCity)"
+          ></el-input>
+          <i class="el-icon-search" @click="searchData(searchCity)"></i>
+          <div class="searh_recom">
+            <span>推荐:</span>
+            <span @click="searchData('广州')">广州</span>
+            <span @click="searchData('上海')">上海</span>
+            <span @click="searchData('北京')">北京</span>
           </div>
         </div>
-        <div class="aside-recommend">
-          <span>推荐城市</span>
-          <img src="http://157.122.54.189:9093/images/pic_sea.jpeg`" alt="">
+        <!-- 推荐攻略 -->
+        <div class="add_post">
+          <el-row type="flex" justify="space-between">
+            <h4>推荐攻略</h4>
+            <nuxt-link :to="`/post/create`">
+              <el-button type="primary" i con="el-icon-edit">写游记</el-button>
+            </nuxt-link>
+          </el-row>
         </div>
-      </el-col>
-      <el-col :span="18">
-        
-      </el-col>
+        <!-- 文章列表 -->
+        <div class="list">
+          <PostList v-for="(item,index) in dataList" :key="index" :data="item"></PostList>
+        </div>
+        <!-- 分页 -->
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageIndex"
+          :page-sizes="[1, 2, 3, 4]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        ></el-pagination>
+      </div>
     </el-row>
   </div>
 </template>
 
 <script>
+import PostList from "@/components/post/postList.vue";
+import PostMenu from "@/components/post/postMenu.vue";
 export default {
   data() {
     return {
-      cityList:[],
-      currentHover:9,
-      hot_city: [],
-      recommoned_city: [],
-      islandList:[],
-      theme_city:[]
+      searchCity: "",
+      //文章总数据
+      postsList: [],
+      //缓存总数据
+      cpostsList: [],
+      // 当前显示的列表数组
+      dataList: [],
+      pageIndex: 1,
+      pageSize: 2,
+      total: 0
     };
   },
-  methods:{
-    handleHover(index){
-      this.currentHover = index
-    },
-    handleOutHover(){
-      this.currentHover = 9
+  components: {
+    PostList,
+    PostMenu
+  },
+  watch: {
+    $route() {
+      this.getData();
     }
   },
-  mounted(){
-    this.$axios({
-      url:'/posts/cities'
-    }).then(res=>{
-      if(res.status === 200){
-        this.cityList = res.data.data
-        console.log(this.cityList);
-        this.hot_city = res.data.data[0].children
-        this.recommoned_city = res.data.data[1].children
-        this.islandList = res.data.data[2].children
-        this.theme_city = res.data.data[3].children
-        
+  mounted() {
+    this.getData();
+  },
+  methods: {
+    searchData(searchCity) {
+      let arr = [];
+      if (this.$route.query.city) {
+        this.postsList = this.cpostsList;
+        console.log(this.postsList);
       }
-      
-    })
-    this.$axios({
-      url:'/posts/recommend'
-    }).then(res => {
-      console.log(res);
-      
-    })
+      this.postsList.forEach(e => {
+        if (e.cityName.indexOf(searchCity) !== -1) {
+          arr.push(e);
+        }
+      });
+      this.searchCity = searchCity;
+
+      this.dataList = arr;
+      this.total = this.dataList.length;
+    },
+    getData() {
+      console.log(this.$route.query);
+      if (this.$route.query.city) {
+        this.$axios({
+          url: "posts",
+          params: this.$route.query
+        }).then(res => {
+          console.log(this.$route.query);
+          if (
+            this.$route.query.city == "北京" ||
+            this.$route.query.city == "广州" ||
+            this.$route.query.city == "青岛" ||
+            this.$route.query.city == "成都"
+          ) {
+            this.postsList = res.data.data;
+            this.total = this.postsList.length;
+            this.dataList = this.postsList.slice(0, this.pageSize);
+          } else {
+            this.$message.warning("没有这个城市的数据");
+             this.postsList =this.cpostsList
+          }
+        });
+      }
+      this.$axios({
+        url: "posts"
+      }).then(res => {
+        console.log(res.data.data);
+        this.postsList = res.data.data;
+        this.cpostsList = [...this.postsList];
+        console.log(this.cpostsList, this.postsList);
+        this.total = this.postsList.length;
+        this.dataList = this.postsList.slice(0, this.pageSize);
+      });
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pageSize = val;
+      this.pageIndex = 1;
+      if (!this.searchCity) {
+        this.dataList = this.postsList.slice(0, this.pageSize);
+      }
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.pageIndex = val;
+      if (!this.searchCity) {
+        this.dataList = this.postsList.slice(
+          (this.pageIndex - 1) * this.pageSize,
+          this.pageIndex * this.pageSize
+        );
+      }
+    }
   }
 };
 </script>
@@ -126,51 +156,62 @@ export default {
 <style lang="less" scoped>
 .container {
   width: 1000px;
-  margin: 0 auto;
-}
-.fr {
-  float: right;
-  height: 40px;
-  line-height: 40px;
-}
-.nav {
-  position: relative;
-  overflow: visible;
-  .nav_menu {
-    li {
-      padding: 0 20px;
+  margin: 20px auto;
+  .aside {
+    width: 30%;
+  }
+  .main {
+    width: 70%;
+    .search {
+      position: relative;
+      .search_box {
+        /deep/ .el-input__inner {
+          width: 100%;
+          // box-sizing: border-box;
+          height: 40px;
+          line-height: 40px;
+          border: 3px solid orange;
+        }
+      }
+      /deep/ .el-icon-search {
+        position: absolute;
+        right: 0;
+        top: 7px;
+        font-size: 24px;
+        color: orange;
+        font-weight: 700;
+        margin-right: 10px;
+      }
+      .searh_recom {
+        padding: 10px 0;
+        font-size: 12px;
+        color: #666;
+        span {
+          cursor: pointer;
+          margin-left: 5px;
+          &:hover {
+            color: orange;
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+    .add_post {
       height: 40px;
       line-height: 40px;
-      font-size: 14px;
-      border: 1px solid #ddd;
-      &:nth-child(-n + 3) {
-        border-bottom: none;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      /deep/.el-button--primary {
+        height: 40px;
       }
-      &:hover {
-        border-right: 1px solid #fff;
-        color: #ffa500;
+      h4 {
+        height: 38px;
+        font-weight: 400;
+        font-size: 18px;
+        color: orange;
+        padding-bottom: 10px;
+        border-bottom: 2px solid orange;
       }
-    }
-  }
-  .nav_item {
-    position: absolute;
-    top: 0;
-    left: 250px;
-    width: 400px;
-    line-height: 30px;
-    font-size: 14px;
-    color: #999;
-    border: 1px solid #ddd;
-    border-left: none;
-    .num {
-      padding-left: 15px;
-      color: #ffa500;
-      font-style: italic;
-      font-size: 20px;
-    }
-    .city {
-      padding: 0 10px;
-      color: #ffa500;
     }
   }
 }
