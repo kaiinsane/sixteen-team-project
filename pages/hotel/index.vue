@@ -378,7 +378,6 @@ export default {
           this.infoData.data[0].scenic
         );
         this.$store.commit("hotelList/setHotelList", this.infoData.data);
-        // console.log(this.$store.state.hotelList.scenicList);
       });
       this.$router.push({
         path: "/hotel?city=74"
@@ -402,12 +401,24 @@ export default {
           url: "/hotels?&" + urlStr
         }).then(res => {
           this.infoData = res.data;
+          this.$store.commit("hotelList/setInfoData", this.infoData);
+          this.$store.commit(
+            "hotelList/setScenicList",
+            this.infoData.data[0].scenic
+          );
+          this.$store.commit("hotelList/setHotelList", this.infoData.data);
         });
       } else {
         this.$axios({
           url: "/hotels"
         }).then(res => {
           this.infoData = res.data;
+          this.$store.commit("hotelList/setInfoData", this.infoData);
+          this.$store.commit(
+            "hotelList/setScenicList",
+            this.infoData.data[0].scenic
+          );
+          this.$store.commit("hotelList/setHotelList", this.infoData.data);
         });
       }
     },
