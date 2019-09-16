@@ -63,6 +63,7 @@ export default {
       cpostsList: [],
       // 当前显示的列表数组
       dataList: [],
+      cdataList: [],
       pageIndex: 1,
       pageSize: 2,
       total: 0
@@ -77,16 +78,27 @@ export default {
       this.getData();
     }
   },
-  mounted() {
-    this.getData();
+  async mounted() {
+    let res = await this.$axios({
+      url: "posts",
+      params: {
+        _limit: 1000
+      }
+    }).then(res => {
+      this.cpostsList = [...res.data.data];
+      this.getData();
+    });
   },
   methods: {
     searchData(searchCity) {
       let arr = [];
+      this.pageIndex = 1;
+
       if (this.$route.query.city) {
         this.postsList = this.cpostsList;
-        console.log(this.postsList);
+        // console.log(this.postsList);
       }
+      this.postsList = this.cpostsList;
       this.postsList.forEach(e => {
         if (e.cityName.indexOf(searchCity) !== -1) {
           arr.push(e);
@@ -95,55 +107,64 @@ export default {
       this.searchCity = searchCity;
 
       this.dataList = arr;
+      this.cdataList = arr;
       this.total = this.dataList.length;
+      this.dataList = this.dataList.slice(0, this.pageSize);
     },
     getData() {
-      console.log(this.$route.query);
+      // console.log(this.$route.query);
       if (this.$route.query.city) {
         this.$axios({
           url: "posts",
           params: this.$route.query
         }).then(res => {
           console.log(this.$route.query);
-          if (
-            this.$route.query.city == "北京" ||
-            this.$route.query.city == "广州" ||
-            this.$route.query.city == "青岛" ||
-            this.$route.query.city == "成都"
-          ) {
-            this.postsList = res.data.data;
-            this.total = this.postsList.length;
-            this.dataList = this.postsList.slice(0, this.pageSize);
-          } else {
-            this.$message.warning("没有这个城市的数据");
-             this.postsList =this.cpostsList
+          console.log(res);
+          this.pageIndex = 1;
+          this.postsList = res.data.data;
+          this.cdataList=[...this.postsList]
+          this.total = this.postsList.length;
+          this.dataList = this.postsList.slice(0, this.pageSize);
+        });
+      } else {
+        this.$axios({
+          url: "posts",
+          params: {
+            _limit: 1000
           }
+        }).then(res => {
+          // console.log(res.data.data);
+          this.postsList = res.data.data;
+          this.cpostsList = [...this.postsList];
+          // console.log(this.cpostsList, this.postsList);
+          this.total = this.postsList.length;
+          this.dataList = this.postsList.slice(0, this.pageSize);
         });
       }
-      this.$axios({
-        url: "posts"
-      }).then(res => {
-        console.log(res.data.data);
-        this.postsList = res.data.data;
-        this.cpostsList = [...this.postsList];
-        console.log(this.cpostsList, this.postsList);
-        this.total = this.postsList.length;
-        this.dataList = this.postsList.slice(0, this.pageSize);
-      });
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
       this.pageSize = val;
       this.pageIndex = 1;
       if (!this.searchCity) {
         this.dataList = this.postsList.slice(0, this.pageSize);
+      } else {
+        this.dataList = this.cdataList.slice(0, this.pageSize);
       }
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`);
       this.pageIndex = val;
       if (!this.searchCity) {
+        console.log(this.dataList);
+
         this.dataList = this.postsList.slice(
+          (this.pageIndex - 1) * this.pageSize,
+          this.pageIndex * this.pageSize
+        );
+      } else {
+        console.log(this.dataList);
+        this.dataList = this.cdataList.slice(
           (this.pageIndex - 1) * this.pageSize,
           this.pageIndex * this.pageSize
         );
