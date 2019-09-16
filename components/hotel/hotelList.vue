@@ -4,7 +4,7 @@
       type="flex"
       justify="center"
       class="hotelItem"
-      v-for="(item,index) in $store.state.hotelList.hotelList"
+      v-for="(item,index) in $store.state.hotelList.infoData.data"
       :key="index"
     >
       <el-col :span="8">
@@ -67,6 +67,11 @@
         </div>
       </el-col>
     </el-row>
+      <el-row type="flex">
+          <el-col :span="24" v-if="$store.state.hotelList.infoData.total === 0">
+            <div style="text-align:center">暂无符合条件的酒店</div>
+          </el-col>
+      </el-row>
   </div>
 </template>
 

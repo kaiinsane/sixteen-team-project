@@ -13,6 +13,8 @@ export const mutations = {
     state.scenicList = value
   },
   setHotelList(state,value){
-    state.hotelList = value
+    if(!value){
+      state.hotelList = state.infoData.data
+    }
   }
 }

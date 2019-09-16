@@ -241,15 +241,7 @@ export default {
       radio: false, // 按钮选中状态，临时变量
       cityList: [], // 存放城市列表
       scenicList: [],
-      infoData: {
-        // data: [
-        //   {
-        //     scenic:[],
-        //     hotellevel: {},
-        //     hoteltype: {}
-        //   }
-        // ]
-      }, // 存放当前酒店列表数据
+      infoData: {}, // 存放当前酒店列表数据
       enterTime: "", // 入住时间
       leftTime: "" // 离开时间
     };
@@ -402,11 +394,13 @@ export default {
         }).then(res => {
           this.infoData = res.data;
           this.$store.commit("hotelList/setInfoData", this.infoData);
+          if(this.infoData.data.length === 0) {
+            return;
+          }
           this.$store.commit(
             "hotelList/setScenicList",
             this.infoData.data[0].scenic
           );
-          this.$store.commit("hotelList/setHotelList", this.infoData.data);
         });
       } else {
         this.$axios({
