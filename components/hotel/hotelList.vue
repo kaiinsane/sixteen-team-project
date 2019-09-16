@@ -16,19 +16,24 @@
         <h2 class="hotel-name" @click="jump(item.id)">{{item.name}}</h2>
         <p style="color:#999">
           {{item.alias}}
-          <span v-if="item.hotellevel&&item.hotellevel.level === 1">
+          <span v-if="item.hotellevel&&item.hotellevel.level === 1" 
+          :title="`${item.hotellevel&&item.hotellevel.level}星级`">
             <i class="iconfont iconhuangguan origin" v-for="(item,index) in [1]" :key="index" />
           </span>
-          <span v-if="item.hotellevel&&item.hotellevel.level === 2">
+          <span v-if="item.hotellevel&&item.hotellevel.level === 2" 
+          :title="`${item.hotellevel&&item.hotellevel.level}星级`">
             <i class="iconfont iconhuangguan origin" v-for="(item,index) in [1,2]" :key="index" />
           </span>
-          <span v-if="item.hotellevel&&item.hotellevel.level === 3">
+          <span v-if="item.hotellevel&&item.hotellevel.level === 3" 
+          :title="`${item.hotellevel&&item.hotellevel.level}星级`">
             <i class="iconfont iconhuangguan origin" v-for="(item,index) in [1,2,3]" :key="index" />
           </span>
-          <span v-if="item.hotellevel&&item.hotellevel.level === 4">
+          <span v-if="item.hotellevel&&item.hotellevel.level === 4" 
+          :title="`${item.hotellevel&&item.hotellevel.level}星级`">
             <i class="iconfont iconhuangguan origin" v-for="(item,index) in [1,2,3,4]" :key="index" />
           </span>
-          <span v-if="item.hotellevel&&item.hotellevel.level === 5">
+          <span v-if="item.hotellevel&&item.hotellevel.level === 5" 
+          :title="`${item.hotellevel&&item.hotellevel.level}星级`">
             <i class="iconfont iconhuangguan origin" v-for="(item,index) in [1,2,3,4,5]" :key="index" />
           </span>
           {{item.hoteltype&&item.hoteltype.name}}
