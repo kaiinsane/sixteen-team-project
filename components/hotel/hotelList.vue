@@ -102,7 +102,8 @@ export default {
   methods: {
     jump(id){
       this.$router.push({
-        path:'hotel/' + id
+        path:'hotel/hotel-detail',
+        query:{id}
       })
     },
     getRandom() {
