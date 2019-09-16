@@ -14,9 +14,13 @@
       <!-- 文章内容 -->
       <div class="post_img">
         <el-row type="flex" justify="space-between">
-           <nuxt-link :to="`/post/detail?id=${data.id}`"  v-for="(item,index) in data.images.slice(0,3)" :key="index">
+          <nuxt-link
+            :to="`/post/detail?id=${data.id}`"
+            v-for="(item,index) in data.images.slice(0,3)"
+            :key="index"
+          >
             <img :src="item" alt />
-           </nuxt-link>
+          </nuxt-link>
         </el-row>
       </div>
       <!-- 文章信息 -->
@@ -55,7 +59,11 @@
           <!-- 文章内容 -->
           <div class="post_img">
             <el-row type="flex" justify="space-between">
-              <nuxt-link :to="`/post/detail?id=${data.id}`" v-for="(item,index) in data.images.slice(0,1)" :key="index">
+              <nuxt-link
+                :to="`/post/detail?id=${data.id}`"
+                v-for="(item,index) in data.images.slice(0,1)"
+                :key="index"
+              >
                 <img :src="item" alt />
               </nuxt-link>
             </el-row>
@@ -64,7 +72,7 @@
         <div class="postList2_right">
           <!-- 文章标题 -->
           <h4 class="post_title">
-            <nuxt-link :to="`/post/detail?id=${data.id}`">{{data.title}} </nuxt-link>
+            <nuxt-link :to="`/post/detail?id=${data.id}`">{{data.title}}</nuxt-link>
           </h4>
           <!-- 文章内容 -->
           <!-- v-html 将内容解析成html-->
@@ -100,7 +108,8 @@
                 </el-row>
               </div>
 
-              <span class="post-info-right">10 赞</span>
+              <span class="post-info-right" v-if="data.like">{{data.like}} 赞</span>
+              <span class="post-info-right" v-if="!data.like">0 赞</span>
             </el-row>
           </div>
         </div>
